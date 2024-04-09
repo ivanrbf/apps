@@ -4,6 +4,7 @@ import android.content.ContentValues.TAG
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
 import android.widget.Toast
 import com.example.login.databinding.ActivityMainBinding
@@ -27,16 +28,11 @@ class MainActivity : AppCompatActivity() {
 
         binding.botaoEntrar.setOnClickListener {
 
-            if (binding.editTextTextUsuario.text.isNullOrEmpty()) {
-                Toast.makeText(
-                    baseContext, "Por favor, preencha Usuário.",
-                    Toast.LENGTH_SHORT
-                ).show()
-            } else if (binding.editTextTextSenha.text.isNullOrEmpty()) {
-                Toast.makeText(
-                    baseContext, "Por favor, preencha a senha.",
-                    Toast.LENGTH_SHORT
-                ).show()
+            if (TextUtils.isEmpty(binding.editTextTextUsuario.text)) {
+                binding.editTextTextUsuario.error = "Campo usuário não pode estar em branco"
+            } else if (TextUtils.isEmpty(binding.editTextTextSenha.text)) {
+                binding.editTextTextSenha.error = "Campo senha não pode estar em branco"
+
             } else {
                 loginUsuarioESenha(
                     binding.editTextTextUsuario.text.toString(),
@@ -53,9 +49,13 @@ class MainActivity : AppCompatActivity() {
         )
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
+
                     // Sign in success, update UI with the signed-in user's information
                     val user = auth.currentUser
-
+                    Toast.makeText(
+                        baseContext, "Authenticação efetuada.",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     abrePrincipal()
                     //updateUI(user)
                 } else {
@@ -70,10 +70,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun abrePrincipal() {
-        Toast.makeText(
-            baseContext, "Authenticação efetuada.",
-            Toast.LENGTH_SHORT
-        ).show()
+
         binding.editTextTextUsuario.text.clear()
         binding.editTextTextUsuario.text.clear()
 
@@ -87,7 +84,17 @@ class MainActivity : AppCompatActivity() {
     public override fun onStart() {
         super.onStart()
         // Check if user is signed in (non-null) and update UI accordingly.
-        //val currentUser = auth.currentUser
-        //updateUI(currentUser)
+        val currentUser = auth.currentUser
+        if (currentUser != null) {
+            if(currentUser.email?.isNotEmpty() == true){
+                Toast.makeText(
+                    baseContext, "Usuário "+ currentUser.email + " logado",
+                    Toast.LENGTH_SHORT
+                ).show()
+                abrePrincipal()
+            }
+        }
+
+    //updateUI(currentUser)
     }
 }
