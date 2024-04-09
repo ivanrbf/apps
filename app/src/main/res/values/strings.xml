@@ -5,4 +5,5 @@
     <string name="botao_entrar">Entrar</string>
     <string name="text_ou">ou</string>
     <string name="todo">TODO</string>
+    <string name="sair">Sair</string>
 </resources>
